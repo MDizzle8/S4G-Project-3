@@ -10,6 +10,7 @@ public class AssetCloner : EditorWindow
     GameObject _assetToClone;
     float _assetScale;
     float _assetSpawnZone = 5f;
+    bool _randomX, _randomY, _randomZ;
 
     //adds window to menu
     [MenuItem("Tools/Asset Cloner")]
@@ -40,8 +41,32 @@ public class AssetCloner : EditorWindow
         {
             CloneAsset();
         }
+
+        //randomize label
+        GUILayout.Label("Randomizer", EditorStyles.boldLabel);
+
+        //axis switches
+        _randomX = EditorGUILayout.Toggle("Randomize X", _randomX);
+        _randomY = EditorGUILayout.Toggle("Randomize Y", _randomY);
+        _randomZ = EditorGUILayout.Toggle("Randomize Z", _randomZ);
+
+        //button to randomize rotations
+        if (GUILayout.Button("Randomize"))
+        {
+            foreach (GameObject go in Selection.gameObjects)go.transform.rotation 
+                    = Quaternion.Euler(GetRandomRotations(go.transform.rotation.eulerAngles));
+        }
     }
 
+    //random rotations function
+    private Vector3 GetRandomRotations (Vector3 _currentRotation)
+    {
+        float x = _randomX ? Random.Range(0f, 360f) : _currentRotation.x;
+        float y = _randomY ? Random.Range(0f, 360f) : _currentRotation.y;
+        float z = _randomZ ? Random.Range(0f, 360f) : _currentRotation.z;
+
+        return new Vector3(x, y, z);
+    }
     //Create the cloner function
     private void CloneAsset()
     {
@@ -70,4 +95,5 @@ public class AssetCloner : EditorWindow
 
         _assetNum++; //increases assetNum each time button is pressed
     }
+
 }
